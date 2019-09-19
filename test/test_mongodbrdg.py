@@ -12,10 +12,10 @@ class MyTestCase(unittest.TestCase):
     def test_random_time(self):
 
         now=datetime.utcnow()
-        future_time =RandomUser.future_random_time(now, basis=0)
+        future_time =RandomSessions.future_random_time(now, basis=0)
         self.assertEqual(now, future_time)
 
-        future_time =RandomUser.future_random_time(now, seconds = 5, basis=1)
+        future_time =RandomSessions.future_random_time(now, seconds = 5, basis=1)
         self.assertGreater(future_time, now)
 
     def test_sessions(self):

@@ -7,27 +7,34 @@ from mongodbrdg.randomuser import RandomUser, RandomSessions
 from mongodbrdg.inserter import Inserter
 import random
 
-if __name__ == "__main__":
 
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mongodb", default="mongodb://localhost:27017", help="MongoDB host: [default: %(default)s]")
-    parser.add_argument("--database", default="USERS",help="MongoDB database name: [default: %(default)s]")
-    parser.add_argument("--collection", default="profiles", help="Default collection for random data:[default: %(default)s]")
+    parser.add_argument("--database", default="USERS", help="MongoDB database name: [default: %(default)s]")
+    parser.add_argument("--collection", default="profiles",
+                        help="Default collection for random data:[default: %(default)s]")
     parser.add_argument("--count", default=10, type=int, help="How many docs to create: [default: %(default)s]")
-    parser.add_argument("--batchsize", default=1000, type=int, help="How many docs to insert per batch: [default: %(default)s]")
+    parser.add_argument("--batchsize", default=1000, type=int,
+                        help="How many docs to insert per batch: [default: %(default)s]")
     parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
     parser.add_argument("--seed", type=int, help="Use this seed value to ensure you always get the same data")
-    parser.add_argument("--drop", default=False, action="store_true", help="Drop data before creating a new set [default: %(default)s]")
-    parser.add_argument("--report", default=False, action="store_true", help="send all generated JSON to the screen [default: %(default)s]" )
-    parser.add_argument("--sessions", default=50, type=int, help="0 to generate a random number of sessions, or a number for a specific number")
-    parser.add_argument("--sessioncollection", default="sessions", help="Name of sessions collection: [default: %(default)s]")
-    parser.add_argument("--bucketsize", type=int, default=1000, help="Bucket size for insert_many [default: %(default)s]")
+    parser.add_argument("--drop", default=False, action="store_true",
+                        help="Drop data before creating a new set [default: %(default)s]")
+    parser.add_argument("--report", default=False, action="store_true",
+                        help="send all generated JSON to the screen [default: %(default)s]")
+    parser.add_argument("--sessions", default=50, type=int,
+                        help="0 to generate a random number of sessions, or a number for a specific number")
+    parser.add_argument("--sessioncollection", default="sessions",
+                        help="Name of sessions collection: [default: %(default)s]")
+    parser.add_argument("--bucketsize", type=int, default=1000,
+                        help="Bucket size for insert_many [default: %(default)s]")
     args = parser.parse_args()
 
     client = pymongo.MongoClient(args.mongodb)
 
     db = client[args.database]
-    user_collection =db[args.collection]
+    user_collection = db[args.collection]
     session_collection = db[args.sessioncollection]
     session_inserter = Inserter(session_collection, 1000)
     user_inserter = Inserter(user_collection, 1000)
@@ -37,13 +44,13 @@ if __name__ == "__main__":
         db.drop_collection(args.collection)
         print(f"Dropping collection: '{session_collection.name}'")
         db.drop_collection(args.sessioncollection)
-    
-    user=RandomUser(locale=args.locale, seed=args.seed)
+
+    user = RandomUser(locale=args.locale, seed=args.seed)
 
     try:
-        user_doc_count:int = 0
-        session_doc_count:int = 0
-        start=datetime.utcnow()
+        user_doc_count: int = 0
+        session_doc_count: int = 0
+        start = datetime.utcnow()
         for i in range(args.count):
             clone = user.make_user()
             user_doc_count = user_doc_count + 1
@@ -71,12 +78,14 @@ if __name__ == "__main__":
     print(f"Inserted {user_doc_count} user docs into {db.name}.{user_collection.name}")
     print(f"Inserted {session_doc_count} session docs into {db.name}.{session_collection.name}")
     print(f"Elapsed time: {elapsed}")
-    elapsed_time = float(elapsed.seconds) + float(elapsed.microseconds)/1000000
+    elapsed_time = float(elapsed.seconds) + float(elapsed.microseconds) / 1000000
     print(f"Elapsed seconds: {elapsed_time}")
 
-    docs_per_second = float(user_doc_count+session_doc_count)/elapsed_time
+    docs_per_second = float(user_doc_count + session_doc_count) / elapsed_time
     print(f"Inserted {round(docs_per_second, 0)} docs per second")
 
-    
+
+if __name__ == "__main__":
+    main()
         
 
