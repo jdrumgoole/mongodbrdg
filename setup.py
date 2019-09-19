@@ -47,6 +47,7 @@ Try it out using the command mongodbrdg -h.
 
     install_requires=["pymongo",
                       "nose",
+                      "mimesis",
                       "dnspython"],
 
     packages=find_packages(),
