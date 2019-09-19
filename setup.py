@@ -54,7 +54,7 @@ real data. We use the Mimesis package to generate the data.
     scripts=[],
     entry_points={
         'console_scripts': [
-            'mongodbrdg=mongodbrdg.mongdbrdg_main:main',
+            'mongodbrdg=mongodbrdg.mongodbrdg_main:main',
         ]
     },
 

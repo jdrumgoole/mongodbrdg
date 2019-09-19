@@ -18,7 +18,7 @@ python_bin:
 prod_build:clean dist test
 	twine upload --repository-url https://upload.pypi.org/legacy/ dist/* -u jdrumgoole
 
-test_build:
+test_build: clean dist test
 	twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u jdrumgoole
 
 test_all: test_scripts
