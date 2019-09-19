@@ -1,7 +1,7 @@
 # mongodb_random_data_generator
 Data generator for generating repeatable random data suitable for use in MongoDB Python programs.
 ```python
-(mongodb_random_data_generator) bash-3.2$ python mongodbrdg/mongodbrdg_main.py -h
+(mongodb_random_data_generator) bash-3.2$ mongodbrdg_-h
 usage: mongodbrdg_main.py [-h] [--mongodb MONGODB] [--database DATABASE]
                           [--collection COLLECTION] [--count COUNT]
                           [--batchsize BATCHSIZE] [-locale LOCALE]

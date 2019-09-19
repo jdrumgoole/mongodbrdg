@@ -20,6 +20,8 @@ Use mongodbrdg to generate random data for MongoDB. Use the -h option
 to see how to generate data. We generate data using a seed and the same
 seed will generate the same data. The data is random but looks like
 real data. We use the Mimesis package to generate the data.
+
+Try it out using the command mongodbrdg -h.
 ''',
 
     license="Apache 2.0",
