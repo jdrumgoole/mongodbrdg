@@ -7,23 +7,20 @@ from mongodbrdg.version import __VERSION__
 
 pyfiles = [f for f in os.listdir(".") if f.endswith(".py")]
 
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
-    name="mongdbrdg",
+    name="mongodbrdg",
     version=__VERSION__,
 
     author="Joe Drumgoole",
     author_email="joe@joedrumgoole.com",
-    description="MongoDB Bridge - Random data generator for MongoDB",
-    long_description=
-    '''
-Use mongodbrdg to generate random data for MongoDB. Use the -h option
-to see how to generate data. We generate data using a seed and the same
-seed will generate the same data. The data is random but looks like
-real data. We use the Mimesis package to generate the data.
-
-Try it out using the command mongodbrdg -h.
-''',
-
+    description="MongoDB RDG - Random data generator for MongoDB",
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     license="Apache 2.0",
     keywords="Random Data MongoDB",
     url="https://github.com/jdrumgoole/mongdb_random_data_generator",

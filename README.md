@@ -1,5 +1,31 @@
 # mongodb_random_data_generator
 Data generator for generating repeatable random data suitable for use in MongoDB Python programs.
+
+## Installation
+
+To install use `pip` or `pipenv`. You must be using python 3.6 or greater. 
+
+```shell script
+$ pip install mongodbrdg
+Collecting mongodbrdg
+...
+Successfully built mongodbrdg
+Installing collected packages: mongodbrdg
+Successfully installed mongodbrdg-0.2a1
+```
+
+## Running mongodbrdg
+
+`mongodbrdg`  installs on your python path and can be run by invoking
+```shell script
+$ mongodbrdg
+```
+
+It expects to have a [mongod](https://docs.mongodb.com/manual/reference/program/mongod/)
+running on the default port (27017). You can point the program at a different
+`mongod` and/or cluster by using the `--mongodb` argument.
+
+# Command line arguments
 ```python
 $ mongodbrdg -h
 usage: mongodbrdg [-h] [--mongodb MONGODB] [--database DATABASE]
@@ -40,8 +66,8 @@ optional arguments:
 ```
 
 # Example Data
-The random data that is random but looks real. We use the python mimesis package
-for this purpose. There are two seperate collections that can eb created. The
+The random data that is random but looks real. We use the python [mimesis](https://mimesis.readthedocs.io/) package
+for this purpose. There are two separate collections that can be created. The
 first is the `profiles` collection which contains example user records. A typical
 example document is:
 
@@ -65,11 +91,19 @@ example document is:
  'user_id': 1000}
 ```
 
+The second is the the `sessions` document.
 If the user asks for sessions to be generated the we will generate a seperate
 collection keyed by the `user_id` and generate a collection of session
 documents.
 
-
+Session documents look like this:
+```json
+{'login': datetime.datetime(2026, 1, 16, 15, 51, 53, 202014), 'user_id': 1000}
+{'logout': datetime.datetime(2026, 1, 17, 17, 42, 53, 881014), 'user_id': 1000}
+```
+They always come in matched pairs. A `login` document and a `logout` document. These
+docs are keyed by the `user_id` field which always matches to a valid profile
+doc.
 
 # Example Usage
 
