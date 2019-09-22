@@ -4,9 +4,9 @@ from mimesis.enums import Gender
 import random
 from datetime import datetime
 
-class RandomUser:
+class User:
 
-    def __init__(self, locale:str="en", seed:int = None):
+    def __init__(self, locale: str = "en", seed: int = None) -> object:
 
         self._locale = locale
         self._seed = seed
@@ -49,11 +49,10 @@ class RandomUser:
         user["language"] = person.language()
         sample_size = random.randint(0,5)
         user["interests"] = random.sample(interests, sample_size)
-        user["last_login"] = user["registered"] + timedelta(minutes=random.randint(5, 600000))
         return user
 
 
-class RandomSessions:
+class Sessions:
 
     def __init__(self, user_id:int, start_time:datetime):
         self._user_id = user_id
@@ -81,7 +80,7 @@ class RandomSessions:
 
     def make_sessions(self, count):
         start = self._start_time
-        for i in range(1, count):
+        for i in range(count):
             s1,s2 = self.make_session(start)
             start = s2["logout"]
             yield s1,s2

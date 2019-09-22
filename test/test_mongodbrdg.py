@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 
-from mongodbrdg.randomuser import RandomUser, RandomSessions
+from mongodbrdg.randomdata import RandomUser, RandomSessions
 
 class MyTestCase(unittest.TestCase):
 
