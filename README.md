@@ -26,7 +26,7 @@ running on the default port (27017). You can point the program at a different
 `mongod` and/or cluster by using the `--mongodb` argument.
 
 # Command line arguments
-```python
+```shell script
 $ mongodbrdg -h
 usage: mongodbrdg [-h] [--mongodb MONGODB] [--database DATABASE]
                   [--collection COLLECTION] [--count COUNT]
@@ -109,33 +109,41 @@ doc.
 
 Some simple examples of the program in action.
 ## Create one random doc:
-```python
+```shell script
 $ mongodbrdg --count 1
 Inserted 1 user docs into USERS.profiles
 $
 ```
 ## Create a doc and output it
 We use the `--report` object to spit out the JSON to stdout. 
-```python
+```shell script
 $ mongodbrdg --count 1 --report
-{'city': 'Union City',
- 'company': 'Taco Tico',
- 'country': 'United States',
- 'email': 'Waylon.Fields@tacotico.bar',
- 'first_name': 'Waylon',
- 'gender': 'MALE',
- 'interests': ['Golf', 'Running', 'Stamp Collecting', 'Soccer', 'politics'],
- 'language': 'Thai',
- 'last_name': 'Fields',
- 'location': {'coordinates': [79.566771, -47.695192], 'type': 'Point'},
- 'phone': '+1-(724)-772-7638',
- 'registered': datetime.datetime(2019, 11, 11, 11, 32, 48, 527725),
- 'user_id': 1000}
+{
+  "first_name": "Jefferson",
+  "last_name": "Lara",
+  "gender": "MALE",
+  "company": "Briggs & Stratton",
+  "email": "Jefferson.Lara@briggs&stratton.int",
+  "registered": "2029-04-08 22:40:45.385561",
+  "user_id": 1000,
+  "country": "United States",
+  "city": "Fort Pierce",
+  "phone": "592-619-1243",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      87.150856,
+      66.17156
+    ]
+  },
+  "language": "Aymara",
+  "interests": []
+}
 Inserted 1 user docs into USERS.profiles
 ```
 
 ## Create many docs
-```python
+```shell script
 $ mongodbrdg --count 100
 Inserted 100 user docs into USERS.profiles
 $
@@ -145,21 +153,31 @@ $
 
 Use the `--seed` option to specify a random integer seed.
 
-```python
+```shell script
 $ mongodbrdg --count 1 --report  --seed 123
-{'city': 'Battle Ground',
- 'company': 'Antec',
- 'country': 'United States',
- 'email': 'Bobbye.Evans@antec.lt',
- 'first_name': 'Bobbye',
- 'gender': 'FEMALE',
- 'interests': ['Triathlon', 'Golf', 'politics'],
- 'language': 'Dhivehi',
- 'last_name': 'Evans',
- 'location': {'coordinates': [-83.63622, 48.41215], 'type': 'Point'},
- 'phone': '1-288-353-0157',
- 'registered': datetime.datetime(2016, 5, 3, 13, 17, 6, 879234),
- 'user_id': 1000}
+{
+  "first_name": "Bobbye",
+  "last_name": "Evans",
+  "gender": "FEMALE",
+  "company": "Antec",
+  "email": "Bobbye.Evans@antec.lt",
+  "registered": "2006-05-03 13:17:06.879234",
+  "user_id": 1000,
+  "country": "United States",
+  "city": "Battle Ground",
+  "phone": "1-288-353-0157",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      -83.63622,
+      48.41215
+    ]
+  },
+  "language": "Dhivehi",
+  "interests": [
+    "Reading"
+  ]
+}
 Inserted 1 user docs into USERS.profiles
 ```
 
@@ -172,22 +190,38 @@ of sessions with `--sessioncount`. A single session generates a `login` and a
 after the `login` session.
 
 ```shell script
-$ mongodbrdg --count 1 --session count --sessioncount 1 --report
-{'city': 'Fairmont',
- 'company': "Zaxby's",
- 'country': 'United States',
- 'email': "Kimbery.Russo@zaxby's.bar",
- 'first_name': 'Kimbery',
- 'gender': 'FEMALE',
- 'interests': [],
- 'language': 'Kurdish',
- 'last_name': 'Russo',
- 'location': {'coordinates': [175.673141, -56.056867], 'type': 'Point'},
- 'phone': '558-304-9716',
- 'registered': datetime.datetime(2019, 8, 20, 4, 15, 11, 993855),
- 'user_id': 1000}
-{'login': datetime.datetime(2019, 8, 21, 6, 29, 12, 224855), 'user_id': 1000}
-{'logout': datetime.datetime(2019, 8, 22, 9, 0, 12, 430855), 'user_id': 1000}
+{
+  "first_name": "Shirley",
+  "last_name": "Fuller",
+  "gender": "MALE",
+  "company": "Sky High Financial Advice",
+  "email": "Shirley.Fuller@skyhighfinancialadvice.int",
+  "registered": "2032-07-08 19:54:00.639183",
+  "user_id": 1000,
+  "country": "United States",
+  "city": "St. Matthews",
+  "phone": "1-036-033-1053",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      12.57423,
+      58.401794
+    ]
+  },
+  "language": "Finnish",
+  "interests": [
+    "Stamp Collecting",
+    "Soccer"
+  ]
+}
+{
+  "user_id": 1000,
+  "login": "2032-07-09 21:39:00.956183"
+}
+{
+  "user_id": 1000,
+  "logout": "2032-07-11 00:24:01.159183"
+}
 Inserted 1 user docs into USERS.profiles
 Inserted 2 session docs into USERS.sessions
 $
