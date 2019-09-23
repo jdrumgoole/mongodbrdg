@@ -81,23 +81,30 @@ first is the `profiles` collection which contains example user records. A typica
 example document is:
 
 ```json
-{'city': 'Mayfield Heights',
- 'company': 'Spectrum Brands',
- 'country': 'United States',
- 'email': 'Sharee.Velasquez@spectrumbrands.biz',
- 'first_name': 'Sharee',
- 'gender': 'FEMALE',
- 'interests': ['Swimmming',
-               'Triathlon',
-               'skydiving',
-               'Football',
-               'Stamp Collecting'],
- 'language': 'German',
- 'last_name': 'Velasquez',
- 'location': {'coordinates': [173.464642, -22.135456], 'type': 'Point'},
- 'phone': '1-205-730-1945',
- 'registered': datetime.datetime(2021, 7, 14, 9, 32, 0, 850772),
- 'user_id': 1000}
+{
+  "first_name": "Yuki",
+  "last_name": "Bryant",
+  "gender": "FEMALE",
+  "company": "Texas Instruments",
+  "email": "Yuki.Bryant@texasinstruments.tel",
+  "registered": "2019-04-04 02:33:32.194658",
+  "user_id": 1000,
+  "country": "United States",
+  "city": "Chicopee",
+  "phone": "228.973.8130",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      96.831211,
+      -18.818878
+    ]
+  },
+  "language": "Gujarati",
+  "interests": [
+    "Reading",
+    "Board gaming"
+  ]
+}
 ```
 
 The second is the the `sessions` document.
