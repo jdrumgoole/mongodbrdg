@@ -1,5 +1,14 @@
-# mongodb_random_data_generator
-Data generator for generating repeatable random data suitable for use in MongoDB Python programs.
+# mongodbrdg - The MongoDB Random Data Generator
+Data generator for generating repeatable random data suitable for use in 
+MongoDB databases. The data is designed to be random but self consistent. So 
+user IDs increase consistently, session docs for login and logout are correctly
+ordered and  sequence of login and logout events are also temporarily ordered.
+
+We also ensure that session events happen only after the registered date for
+the user. 
+
+We generate one collection by default `USERS/profiles`. Users can generate
+a second collection by specifying the `--session` argument. 
 
 ## Installation
 
