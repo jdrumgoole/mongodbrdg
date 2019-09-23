@@ -26,8 +26,11 @@ def main():
     parser.add_argument("--database", default="USERS", help="MongoDB database name: [default: %(default)s]")
     parser.add_argument("--collection", default="profiles",
                         help="Default collection for random data:[default: %(default)s]")
-    parser.add_argument("--count", default=10, type=int, help="How many docs to create: [default: %(default)s]")
-    parser.add_argument("--userinit", default=1000, type=int,
+    parser.add_argument("--idstart", default=0, type=int,
+                        help="The starting value for a user_id range [default: %(default)s]")
+    parser.add_argument("--idend", default=10, type=int,
+                        help="The end value for a user_id range: [default: %(default)s]")
+    parser.add_argument("--idstart", default=0, type=int,
                         help="The starting value for a userID range [default: %(default)s]")
     parser.add_argument("--batchsize", default=1000, type=int,
                         help="How many docs to insert per batch: [default: %(default)s]")
@@ -68,7 +71,10 @@ def main():
             print(f"Dropping collection: '{db.name}.{session_collection.name}'")
             db.drop_collection(args.sessioncollection)
 
-    user = User(locale=args.locale, user_id_start=args.userinit, seed=args.seed)
+    user = User(locale=args.locale,
+                user_id_start=args.idstart,
+                user_id_end=args.idend,
+                seed=args.seed)
 
     try:
         user_doc_count: int = 0

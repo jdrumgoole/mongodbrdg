@@ -33,24 +33,24 @@ class MyTestCase(unittest.TestCase):
 
     def test_insert(self):
         users = User()
-        for i in users.make_users(100):
+        for i in users.make_users():
             self._user_inserter.insert(i)
         self._user_inserter.flush()
-        self.assertEqual(self._users.count_documents({}), 100)
+        self.assertEqual(self._users.count_documents({}), users.size)
 
     def test_sessions(self):
 
         user = User().make_one_user()
         self._user_inserter.insert(user, flush=True)
-        s = Sessions(user)
-        for i, j in s.make_sessions(20):
+        s = Sessions(user, total=20)
+        for i, j in s.make_sessions():
             self._session_inserter.insert(i)
             self._session_inserter.insert(j)
             self.assertGreater(j["logout"], i["login"])
 
         self._session_inserter.flush()
 
-        self.assertEqual( 20 * 2, self._sessions.count_documents({}))
+        self.assertEqual(s.total_documents, self._sessions.count_documents({}))
 
 
 

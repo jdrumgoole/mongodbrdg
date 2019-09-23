@@ -10,7 +10,10 @@ class User:
                  "Board gaming", "Darts", "Swimmming", "Triathlon", "Running",
                  "Reading", "politics"]
 
-    def __init__(self, locale: str = "en", user_id_start:int=1000, seed: int = None) -> object:
+    def __init__(self, locale: str = "en",
+                 user_id_start:int=0,
+                 user_id_end:int=1000,
+                 seed: int = None) -> object:
 
         self._locale = locale
         self._seed = seed
@@ -20,6 +23,27 @@ class User:
             self._generic = Generic(self._locale)
 
         self._user_id_start = user_id_start
+        self._user_id_end = user_id_end
+        assert self._user_id_start < self._user_id_end
+
+    @property
+    def user_id_start(self):
+        return self._user_id_start
+
+    @property
+    def user_id_end(self):
+        return self._user_id_end
+
+    @property
+    def size(self):
+        return self._user_id_end - self._user_id_start
+
+    def make_friends(self, max_friends=20):
+        friends:set=set()
+        for i in range(random.randint(0, max_friends)):
+            friend = random.randint( self._user_id_start, self._user_id_end)
+            friends.add(i)
+        return list(friends)
 
     def make_one_user(self, user_id:int=0):
 
@@ -47,21 +71,31 @@ class User:
         user["phone"] = person.telephone()
         user["location"] = { "type": "Point", "coordinates" : [address.longitude(), address.latitude()]}
         user["language"] = person.language()
+        user["friends"] = self.make_friends()
         sample_size = random.randint(0,5)
         user["interests"] = random.sample(User.interests, sample_size)
         return user
 
-    def make_users(self, count:int):
-        for i in range(count):
+    def make_users(self):
+        for i in range(self._user_id_start, self._user_id_end):
             yield self.make_one_user(i)
 
 
 class Sessions:
 
-    def __init__(self, user:dict):
+    def __init__(self, user:dict, total:int):
 
         self._user_id = user["user_id"]
         self._start_time = user["registered"]
+        self._total = total
+
+    @property
+    def total(self):
+        return self._total
+
+    @property
+    def total_documents(self):
+        return self._total * 2
 
     @staticmethod
     def future_random_time(now, days=0, hours=0, minutes=0, seconds=0, milliseconds=0, basis=1):
@@ -83,9 +117,9 @@ class Sessions:
 
         return login_session, logout_session
 
-    def make_sessions(self, count):
+    def make_sessions(self):
         start = self._start_time
-        for i in range(count):
+        for i in range(self._total):
             s1,s2 = self.make_session(start)
             start = s2["logout"]
             yield s1,s2
