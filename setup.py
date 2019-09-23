@@ -51,9 +51,8 @@ setup(
 
     data_files=[],
     project_urls={
-        "src" : "https://github.com/jdrumgoole/mongodb_random_data_generator",
-        "author": "https://blog.joedrumgoole.com",
-        "MongoDB Atlas" : "http://bit.ly/mdb-atlas",
+        "github src" : "https://github.com/jdrumgoole/mongodb_random_data_generator",
+        "Issues" : "https://github.com/jdrumgoole/mongodb_random_data_generator/issues",
     },
     python_requires='>3.7',
     scripts=[],
