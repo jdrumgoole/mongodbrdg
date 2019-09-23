@@ -27,6 +27,8 @@ def main():
     parser.add_argument("--collection", default="profiles",
                         help="Default collection for random data:[default: %(default)s]")
     parser.add_argument("--count", default=10, type=int, help="How many docs to create: [default: %(default)s]")
+    parser.add_argument("--userinit", default=1000, type=int,
+                        help="The starting value for a userID range [default: %(default)s]")
     parser.add_argument("--batchsize", default=1000, type=int,
                         help="How many docs to insert per batch: [default: %(default)s]")
     parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
@@ -66,25 +68,23 @@ def main():
             print(f"Dropping collection: '{db.name}.{session_collection.name}'")
             db.drop_collection(args.sessioncollection)
 
-    user = User(locale=args.locale, seed=args.seed)
+    user = User(locale=args.locale, user_id_start=args.userinit, seed=args.seed)
 
     try:
         user_doc_count: int = 0
         session_doc_count: int = 0
         start = datetime.utcnow()
-        for i in range(args.count):
-            clone = user.make_user()
-            user_doc_count = user_doc_count + 1
-            user_inserter.insert(clone)
+        for user, i in enumerate(user.make_users(args.count)):
+            user_inserter.insert(user)
             if args.report:
-                print_json(clone)
+                print_json(user)
             if args.session != "none":
                 if args.session == "random":
                     session_count = random.randint(0, args.sessioncount)
                 else:
                     session_count = args.sessioncount
 
-                sessions = Sessions(clone["user_id"], clone["registered"])
+                sessions = Sessions(user)
                 for login, logout in sessions.make_sessions(session_count):
                     session_inserter.insert(login)
                     if args.report:

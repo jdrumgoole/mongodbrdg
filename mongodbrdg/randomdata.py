@@ -6,7 +6,11 @@ from datetime import datetime
 
 class User:
 
-    def __init__(self, locale: str = "en", seed: int = None) -> object:
+    interests = ["Soccer", "Golf", "Football", "Stamp Collecting", "skydiving",
+                 "Board gaming", "Darts", "Swimmming", "Triathlon", "Running",
+                 "Reading", "politics"]
+
+    def __init__(self, locale: str = "en", user_id_start:int=1000, seed: int = None) -> object:
 
         self._locale = locale
         self._seed = seed
@@ -15,9 +19,9 @@ class User:
         else:
             self._generic = Generic(self._locale)
 
-        self._user_id = 1000
+        self._user_id_start = user_id_start
 
-    def make_user(self):
+    def make_one_user(self, user_id:int=0):
 
         person = self._generic.person
         address = self._generic.address
@@ -26,9 +30,6 @@ class User:
         datetime = self._generic.datetime
 
         user = {}
-        interests = ["Soccer", "Golf", "Football", "Stamp Collecting", "skydiving",
-                     "Board gaming", "Darts", "Swimmming", "Triathlon", "Running",
-                     "Reading", "politics"]
 
         gender = random.choice(list(Gender))
         gender_string = str(gender).split(".")[1]
@@ -40,23 +41,27 @@ class User:
         user["email"] = f"{user['first_name']}.{user['last_name']}@{email_domain}{internet.top_level_domain()}"
         year = random.randint(2000, 2018)
         user["registered"] = datetime.datetime(start=year)
-        user["user_id"] = self._user_id
-        self._user_id = self._user_id + 1
+        user["user_id"] = self._user_id_start + user_id
         user["country"]= address.country()
         user["city"] = address.city()
         user["phone"] = person.telephone()
         user["location"] = { "type": "Point", "coordinates" : [address.longitude(), address.latitude()]}
         user["language"] = person.language()
         sample_size = random.randint(0,5)
-        user["interests"] = random.sample(interests, sample_size)
+        user["interests"] = random.sample(User.interests, sample_size)
         return user
+
+    def make_users(self, count:int):
+        for i in range(count):
+            yield self.make_one_user(i)
 
 
 class Sessions:
 
-    def __init__(self, user_id:int, start_time:datetime):
-        self._user_id = user_id
-        self._start_time = start_time
+    def __init__(self, user:dict):
+
+        self._user_id = user["user_id"]
+        self._start_time = user["registered"]
 
     @staticmethod
     def future_random_time(now, days=0, hours=0, minutes=0, seconds=0, milliseconds=0, basis=1):
