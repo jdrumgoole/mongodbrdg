@@ -10,6 +10,7 @@ pymongo = "*"
 mimesis = "*"
 nose = "*"
 twine = "*"
+keyring = "*"
 
 [requires]
 python_version = "3.7"

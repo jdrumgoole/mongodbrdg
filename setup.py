@@ -50,6 +50,10 @@ setup(
     packages=find_packages(),
 
     data_files=[],
+    project_urls={
+        "github src" : "https://github.com/jdrumgoole/mongodb_random_data_generator",
+        "Issues" : "https://github.com/jdrumgoole/mongodb_random_data_generator/issues",
+    },
     python_requires='>3.7',
     scripts=[],
     entry_points={

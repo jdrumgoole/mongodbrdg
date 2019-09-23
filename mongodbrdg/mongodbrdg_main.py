@@ -1,12 +1,21 @@
 import pymongo
 import argparse
-import pprint
 from datetime import datetime
 import sys
 from mongodbrdg.randomdata import User, Sessions
 from mongodbrdg.inserter import Inserter
 from mongodbrdg.version import __VERSION__
 import random
+import json
+
+
+def date_converter(o):
+    if isinstance(o, datetime):
+        return o.__str__()
+
+
+def print_json(doc, indent=2):
+    print(json.dumps(doc, indent=indent, default=date_converter))
 
 
 def main():
@@ -68,7 +77,7 @@ def main():
             user_doc_count = user_doc_count + 1
             user_inserter.insert(clone)
             if args.report:
-                pprint.pprint(clone)
+                print_json(clone)
             if args.session != "none":
                 if args.session == "random":
                     session_count = random.randint(0, args.sessioncount)
@@ -79,10 +88,10 @@ def main():
                 for login, logout in sessions.make_sessions(session_count):
                     session_inserter.insert(login)
                     if args.report:
-                        pprint.pprint(login)
+                        print_json(login)
                     session_inserter.insert(logout)
                     if args.report:
-                        pprint.pprint(logout)
+                        print_json(logout)
                     session_doc_count = session_doc_count + 2
                 session_inserter.flush()
 

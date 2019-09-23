@@ -12,24 +12,24 @@ root:
 	@echo "The project ROOT is '${ROOT}'"
 
 python_bin:
-	python -c "import os;print(os.environ.get('USERNAME'))"
+	pipenv run python -c "import os;print(os.environ.get('USERNAME'))"
 	which python
 
 prod_build:clean dist test
-	twine upload --repository-url https://upload.pypi.org/legacy/ dist/* -u jdrumgoole
+	pipenv run twine upload --repository-url https://upload.pypi.org/legacy/ dist/* -u jdrumgoole
 
 test_build: clean dist test
-	twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u jdrumgoole
+	pipenv run twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u jdrumgoole
 
 test_all: test_scripts
-	python setup.py test
+	pipenv run python setup.py test
 
 nose:
-	which python
-	nosetests
+	pipenv run which python
+	pipenv run nosetests
 
 dist:
-	python setup.py sdist
+	pipenv run python setup.py sdist
 
 clean:
 	rm -rf dist bdist sdist
@@ -38,7 +38,7 @@ pkgs:
 	pipenv install pymongo keyring twine nose
 
 init: pkgs
-	keyring set https://test.pypi.org/legacy/ ${USERNAME}
-	keyring set https://upload.pypi.org/legacy/ ${USERNAME}
+	pipenv run keyring set https://test.pypi.org/legacy/ ${USERNAME}
+	pipenv run keyring set https://upload.pypi.org/legacy/ ${USERNAME}
 
 
