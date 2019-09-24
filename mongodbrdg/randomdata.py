@@ -13,6 +13,7 @@ class User:
     def __init__(self, locale: str = "en",
                  user_id_start:int=0,
                  user_id_end:int=1000,
+                 max_friends:int = 0,
                  seed: int = None) -> object:
 
         self._locale = locale
@@ -24,6 +25,7 @@ class User:
 
         self._user_id_start = user_id_start
         self._user_id_end = user_id_end
+        self._max_friends = max_friends
         assert self._user_id_start < self._user_id_end
 
     @property
@@ -38,11 +40,11 @@ class User:
     def size(self):
         return self._user_id_end - self._user_id_start
 
-    def make_friends(self, max_friends=20):
+    def make_friends(self):
         friends:set=set()
-        for i in range(random.randint(0, max_friends)):
+        for i in range(random.randint(0, self._max_friends)):
             friend = random.randint( self._user_id_start, self._user_id_end)
-            friends.add(i)
+            friends.add(friend)
         return list(friends)
 
     def make_one_user(self, user_id:int=0):
@@ -71,7 +73,8 @@ class User:
         user["phone"] = person.telephone()
         user["location"] = { "type": "Point", "coordinates" : [address.longitude(), address.latitude()]}
         user["language"] = person.language()
-        user["friends"] = self.make_friends()
+        if self._max_friends > 0:
+            user["friends"] = self.make_friends()
         sample_size = random.randint(0,5)
         user["interests"] = random.sample(User.interests, sample_size)
         return user

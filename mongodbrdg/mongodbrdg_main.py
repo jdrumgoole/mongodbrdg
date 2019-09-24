@@ -30,11 +30,8 @@ def main():
                         help="The starting value for a user_id range [default: %(default)s]")
     parser.add_argument("--idend", default=10, type=int,
                         help="The end value for a user_id range: [default: %(default)s]")
-    parser.add_argument("--idstart", default=0, type=int,
-                        help="The starting value for a userID range [default: %(default)s]")
-    parser.add_argument("--batchsize", default=1000, type=int,
-                        help="How many docs to insert per batch: [default: %(default)s]")
-    parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
+    parser.add_argument("--maxfriends", default=0, type=int,
+                        help="Specify max number of friend to include in profile [default: %(default)s]")
     parser.add_argument("--seed", default=None, type=int, help="Use this seed value to ensure you always get the same data")
     parser.add_argument("--drop", default=False, action="store_true",
                         help="Drop data before creating a new set [default: %(default)s]")
@@ -51,6 +48,9 @@ def main():
                         help="Bucket size for insert_many [default: %(default)s]")
     parser.add_argument("--stats", default=False, action="store_true",
                         help="Report time to insert data")
+    parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
+    parser.add_argument("--batchsize", default=1000, type=int,
+                        help="How many docs to insert per batch: [default: %(default)s]")
 
     args = parser.parse_args()
 
@@ -67,20 +67,20 @@ def main():
     if args.drop:
         print(f"Dropping collection: '{db.name}.{user_collection.name}'")
         db.drop_collection(args.collection)
-        if args.sessions != "none" :
+        if args.session != "none" :
             print(f"Dropping collection: '{db.name}.{session_collection.name}'")
             db.drop_collection(args.sessioncollection)
 
     user = User(locale=args.locale,
                 user_id_start=args.idstart,
                 user_id_end=args.idend,
+                max_friends=args.maxfriends,
                 seed=args.seed)
 
     try:
-        user_doc_count: int = 0
         session_doc_count: int = 0
         start = datetime.utcnow()
-        for user, i in enumerate(user.make_users(args.count)):
+        for user_doc_count, user in enumerate(user.make_users(),1):
             user_inserter.insert(user)
             if args.report:
                 print_json(user)
@@ -90,8 +90,8 @@ def main():
                 else:
                     session_count = args.sessioncount
 
-                sessions = Sessions(user)
-                for login, logout in sessions.make_sessions(session_count):
+                sessions = Sessions(user, args.sessioncount)
+                for login, logout in sessions.make_sessions():
                     session_inserter.insert(login)
                     if args.report:
                         print_json(login)

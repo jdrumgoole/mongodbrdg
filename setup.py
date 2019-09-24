@@ -8,6 +8,16 @@ from mongodbrdg.version import __VERSION__
 pyfiles = [f for f in os.listdir(".") if f.endswith(".py")]
 
 from os import path
+
+import sys
+python_major = sys.version_info[0]
+python_minor = sys.version_info[1]
+
+if python_major <= 2:
+    sys.exit("Sorry, You are running python {0}.{1} which is not supported".format(python_major, python_minor))
+elif python_minor < 6:
+    sys.exit("Sorry, You are running python {0}.{1} which is not supported".format(python_major, python_minor))
+
 this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
@@ -40,7 +50,7 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.7'],
+        'Programming Language :: Python :: 3.6'],
 
     install_requires=["pymongo",
                       "nose",
@@ -54,7 +64,7 @@ setup(
         "github src" : "https://github.com/jdrumgoole/mongodb_random_data_generator",
         "Issues" : "https://github.com/jdrumgoole/mongodb_random_data_generator/issues",
     },
-    python_requires='>3.7',
+    python_requires='>=3.6',
     scripts=[],
     entry_points={
         'console_scripts': [
