@@ -89,7 +89,7 @@ class User:
         user["email"] = f"{user['first_name']}.{user['last_name']}@{email_domain}{internet.top_level_domain()}"
         year = random.randint(2000, 2018)
         user["registered"] = datetime.datetime(start=self._start_year, end=self._end_year)
-        user["user_id"] = self._user_id_start + user_id
+        user["user_id"] = user_id
         user["country"]= address.country()
         user["city"] = address.city()
         user["phone"] = person.telephone()
