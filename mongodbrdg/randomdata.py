@@ -14,6 +14,8 @@ class User:
                  user_id_start:int=0,
                  user_id_end:int=1000,
                  max_friends:int = 0,
+                 start_year:int = None,
+                 end_year:int = None,
                  seed: int = None) -> object:
 
         self._locale = locale
@@ -28,6 +30,17 @@ class User:
         self._max_friends = max_friends
         assert self._user_id_start < self._user_id_end
 
+        if start_year is None:
+            self._start_year = 2015
+        else:
+            self._start_year = start_year
+
+        if end_year is None:
+            self._end_year = 2019
+        else:
+            self._end_year = end_year
+
+
     @property
     def user_id_start(self):
         return self._user_id_start
@@ -39,6 +52,15 @@ class User:
     @property
     def size(self):
         return self._user_id_end - self._user_id_start
+
+    @property
+    def start_year(self):
+        return self._start_year
+
+    @property
+    def end_year(self):
+        return self._end_year
+
 
     def make_friends(self):
         friends:set=set()
@@ -66,7 +88,7 @@ class User:
         email_domain = "".join(user['company'].lower().split(" "))
         user["email"] = f"{user['first_name']}.{user['last_name']}@{email_domain}{internet.top_level_domain()}"
         year = random.randint(2000, 2018)
-        user["registered"] = datetime.datetime(start=year)
+        user["registered"] = datetime.datetime(start=self._start_year, end=self._end_year)
         user["user_id"] = self._user_id_start + user_id
         user["country"]= address.country()
         user["city"] = address.city()

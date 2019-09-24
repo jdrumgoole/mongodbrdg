@@ -1,12 +1,16 @@
-import pymongo
+
 import argparse
 from datetime import datetime
 import sys
+import random
+import json
+
+import pymongo
+
 from mongodbrdg.randomdata import User, Sessions
 from mongodbrdg.inserter import Inserter
 from mongodbrdg.version import __VERSION__
-import random
-import json
+
 
 
 def date_converter(o):
@@ -30,6 +34,10 @@ def main():
                         help="The starting value for a user_id range [default: %(default)s]")
     parser.add_argument("--idend", default=10, type=int,
                         help="The end value for a user_id range: [default: %(default)s]")
+    parser.add_argument("--startyear", type=int, default=2015,
+                        help="Starting date range for a query [default: %(default)s]")
+    parser.add_argument("--endyear", type=int,default=2019,
+                        help="Ending date range for a query [default: %(default)s]")
     parser.add_argument("--maxfriends", default=0, type=int,
                         help="Specify max number of friend to include in profile [default: %(default)s]")
     parser.add_argument("--seed", default=None, type=int, help="Use this seed value to ensure you always get the same data")
@@ -54,6 +62,8 @@ def main():
 
     args = parser.parse_args()
 
+    assert args.startyear >= args.endyear
+
     client = pymongo.MongoClient(args.mongodb)
 
     db = client[args.database]
@@ -75,6 +85,8 @@ def main():
                 user_id_start=args.idstart,
                 user_id_end=args.idend,
                 max_friends=args.maxfriends,
+                start_year=args.startyear,
+                end_year=args.endyear,
                 seed=args.seed)
 
     try:

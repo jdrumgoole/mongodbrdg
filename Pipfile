@@ -11,6 +11,7 @@ mimesis = "*"
 nose = "*"
 twine = "*"
 keyring = "*"
+dateutils = "*"
 
 [requires]
 python_version = "3.7"
