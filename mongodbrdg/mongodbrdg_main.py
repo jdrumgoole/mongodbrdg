@@ -4,22 +4,38 @@ from datetime import datetime
 import sys
 import random
 import json
-
+from enum import Enum
 import pymongo
-
+import pprint
+from queue import Queue
 from mongodbrdg.randomdata import User, Sessions
 from mongodbrdg.inserter import Inserter
 from mongodbrdg.version import __VERSION__
 
+
+class Format(Enum):
+    json = 'json'
+    python = 'python'
+
+    def __str__(self):
+        return self.value
 
 
 def date_converter(o):
     if isinstance(o, datetime):
         return o.__str__()
 
-
 def print_json(doc, indent=2):
     print(json.dumps(doc, indent=indent, default=date_converter))
+
+
+def report(doc, f:Format=Format.json, indent=2):
+    if f == Format.json:
+        print(json.dumps(doc, indent=indent, default=date_converter))
+    else:
+        pprint.pprint(doc, indent=indent)
+
+
 
 
 def main():
@@ -56,13 +72,16 @@ def main():
                         help="Bucket size for insert_many [default: %(default)s]")
     parser.add_argument("--stats", default=False, action="store_true",
                         help="Report time to insert data")
+    parser.add_argument('--format', type=Format, choices=list(Format), default=Format.json,
+                        help="Define output format for --report [default: %(default)s]")
     parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
     parser.add_argument("--batchsize", default=1000, type=int,
                         help="How many docs to insert per batch: [default: %(default)s]")
 
     args = parser.parse_args()
 
-    assert args.startyear >= args.endyear
+    q: Queue=Queue()
+    assert args.startyear <= args.endyear
 
     client = pymongo.MongoClient(args.mongodb)
 
@@ -93,9 +112,10 @@ def main():
         session_doc_count: int = 0
         start = datetime.utcnow()
         for user_doc_count, user in enumerate(user.make_users(),1):
+            q.put(user)
             user_inserter.insert(user)
             if args.report:
-                print_json(user)
+                report(user, args.format)
             if args.session != "none":
                 if args.session == "random":
                     session_count = random.randint(0, args.sessioncount)
@@ -106,10 +126,10 @@ def main():
                 for login, logout in sessions.make_sessions():
                     session_inserter.insert(login)
                     if args.report:
-                        print_json(login)
+                        report(login, args.format)
                     session_inserter.insert(logout)
                     if args.report:
-                        print_json(logout)
+                        report(logout, args.format)
                     session_doc_count = session_doc_count + 2
                 session_inserter.flush()
 
