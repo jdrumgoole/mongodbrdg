@@ -12,6 +12,7 @@ nose = "*"
 twine = "*"
 keyring = "*"
 dateutils = "*"
+pyinstaller = "*"
 
 [requires]
 python_version = "3.7"
