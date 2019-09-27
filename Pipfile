@@ -12,7 +12,7 @@ nose = "*"
 twine = "*"
 keyring = "*"
 dateutils = "*"
-pyinstaller = "*"
+motor = "*"
 
 [requires]
 python_version = "3.7"
