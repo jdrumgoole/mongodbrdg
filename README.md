@@ -7,13 +7,13 @@ ordered and  sequence of login and logout events are also temporarily ordered.
 We also ensure that session events happen only after the registered date for
 the user. 
 
-We generate one collection by default `USERS/profiles`. Users can generate
+We generate one collection by default `USERS.profiles`. Users can generate
 a second collection by specifying the `--session` argument. The sessions 
 collection is called `USERs.sessions`.
 
 ## Installation
 
-To install use `pip` or `pipenv`. You must be using python 3.6 or greater. 
+To install use `pip` or `pipenv`. You **must be using python 3.6** or greater. 
 
 ```shell script
 $ pip install mongodbrdg
