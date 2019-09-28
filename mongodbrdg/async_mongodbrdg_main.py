@@ -159,7 +159,7 @@ def main():
                         help="Default collection for random data:[default: %(default)s]")
     parser.add_argument("--idstart", default=0, type=int,
                         help="The starting value for a user_id range [default: %(default)s]")
-    parser.add_argument("--idend", default=10, type=int,
+    parser.add_argument("--idend", default=10000, type=int,
                         help="The end value for a user_id range: [default: %(default)s]")
     parser.add_argument("--startyear", type=int, default=2015,
                         help="Starting date range for a query [default: %(default)s]")
