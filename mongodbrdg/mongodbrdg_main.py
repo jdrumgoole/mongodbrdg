@@ -8,8 +8,8 @@ from enum import Enum
 import pymongo
 import pprint
 from queue import Queue
-from mongodbrdg.randomdata import User, Sessions
-from mongodbrdg.inserter import Inserter
+from mongodbrdg.randomuser import User, Sessions
+from mongodbrdg.blockinserter import BlockInserter
 from mongodbrdg.version import __VERSION__
 
 
@@ -25,6 +25,7 @@ def date_converter(o):
     if isinstance(o, datetime):
         return o.__str__()
 
+
 def print_json(doc, indent=2):
     print(json.dumps(doc, indent=indent, default=date_converter))
 
@@ -34,8 +35,6 @@ def report(doc, f:Format=Format.json, indent=2):
         print(json.dumps(doc, indent=indent, default=date_converter))
     else:
         pprint.pprint(doc, indent=indent)
-
-
 
 
 def main():
@@ -68,30 +67,27 @@ def main():
                              "Gives the random bound for random sessions [default: %(default)s]")
     parser.add_argument("--sessioncollection", default="sessions",
                         help="Name of sessions collection: [default: %(default)s]")
-    parser.add_argument("--bucketsize", type=int, default=1000,
-                        help="Bucket size for insert_many [default: %(default)s]")
     parser.add_argument("--stats", default=False, action="store_true",
                         help="Report time to insert data")
     parser.add_argument('--format', type=Format, choices=list(Format), default=Format.json,
                         help="Define output format for --report [default: %(default)s]")
-    parser.add_argument("-locale", default="en", help="Locale to use for data: [default: %(default)s]")
+    parser.add_argument("--locale", default="en", help="Locale to use for data: [default: %(default)s]")
     parser.add_argument("--batchsize", default=1000, type=int,
                         help="How many docs to insert per batch: [default: %(default)s]")
 
     args = parser.parse_args()
 
-    q: Queue=Queue()
     assert args.startyear <= args.endyear
 
     client = pymongo.MongoClient(args.mongodb)
 
     db = client[args.database]
     user_collection = db[args.collection]
-    user_inserter = Inserter(user_collection, 1000)
+    user_inserter = BlockInserter(user_collection, args.batchsize)
 
-    if args.session != "none" :
+    if args.session != "none":
         session_collection = db[args.sessioncollection]
-        session_inserter = Inserter(session_collection, 1000)
+        session_inserter = BlockInserter(session_collection, args.batchsize)
 
     if args.drop:
         print(f"Dropping collection: '{db.name}.{user_collection.name}'")
@@ -112,8 +108,7 @@ def main():
         session_doc_count: int = 0
         start = datetime.utcnow()
         for user_doc_count, user in enumerate(user.make_users(),1):
-            q.put(user)
-            user_inserter.insert(user)
+            user_inserter.insert_one(user)
             if args.report:
                 report(user, args.format)
             if args.session != "none":

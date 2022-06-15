@@ -12,10 +12,9 @@ import pymongo
 import pprint
 from motor import motor_asyncio
 
-from mongodbrdg.randomdata import User, Sessions
-from mongodbrdg.inserter import Inserter
+from mongodbrdg.randomuser import User, Sessions
+from mongodbrdg.blockinserter import BlockInserter
 from mongodbrdg.version import __VERSION__
-
 
 class Format(Enum):
     json = 'json'
@@ -24,14 +23,12 @@ class Format(Enum):
     def __str__(self):
         return self.value
 
-
 def date_converter(o):
     if isinstance(o, datetime):
         return o.__str__()
 
 def print_json(doc, indent=2):
     print(json.dumps(doc, indent=indent, default=date_converter))
-
 
 def report(doc, f:Format=Format.json, indent=2):
     if f == Format.json:
