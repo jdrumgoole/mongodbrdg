@@ -1,4 +1,5 @@
 import threading
+from datetime import datetime
 
 import pymongo
 from mongodbrdg.blockinserter import BlockInserter
@@ -32,10 +33,11 @@ class ThreadedInserter:
         self._user_count = user_count
         self._threads = {}
         self._collection = c
-        self._inserter = BlockInserter(self._collection)
+
         self._doc_generator = doc_generator
         self._thread_counter = 0
-
+        self._start = None
+        self._end = None
 
     @staticmethod
     def distribute(thread_count, user_count):
@@ -68,13 +70,20 @@ class ThreadedInserter:
         #         segments.append((start, end + surplus))
         # return segments
 
+    @property
+    def elapsed(self):
+        return self._end - self._start
+
     def start(self, thread_count, user_count):
+        self._start = datetime.utcnow()
         for start_id, end_id in self.distribute(thread_count, user_count):
-            print(f"start_id={start_id} end_id={end_id}")
+            #print(f"start_id={start_id} end_id={end_id}")
             self._thread_counter = self._thread_counter + 1
+            generator = self._doc_generator()
+            inserter = BlockInserter(self._collection)
             self._threads[self._thread_counter] = threading.Thread(target=self.insert_func,
-                                                             args=[self._inserter, self._doc_generator, start_id, end_id],
-                                                             daemon=True)
+                                                                   args=[inserter, generator, start_id, end_id],
+                                                                   daemon=True)
             self._threads[self._thread_counter].start()
 
     def stop(self):
@@ -82,12 +91,13 @@ class ThreadedInserter:
             for _, v in self._threads.items():
                 v.join()
                 self._thread_counter = self._thread_counter - 1
+        self._end = datetime.utcnow()
 
     @staticmethod
     def insert_func(inserter, doc_generator, start_id, end_id):
         try:
             for user_doc_count, user in enumerate(doc_generator.make_docs(start_id, end_id), 1):
-                print(f"Adding user : {user['first_name']}")
+                #print(f"Adding user : {user['first_name']}")
                 inserter.insert_one(user)
             inserter.flush()
         except pymongo.errors.BulkWriteError as e:

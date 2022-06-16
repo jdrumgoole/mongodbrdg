@@ -20,7 +20,7 @@ class TestThreading(unittest.TestCase):
     def test_single_inserter(self):
         u = User()
         try:
-            t = ThreadedInserter(c=self._users, doc_generator=u)
+            t = ThreadedInserter(c=self._users, doc_generator=User)
             t.start(thread_count=1, user_count=20)
             t.stop()
         except pymongo.errors.BulkWriteError as e:
@@ -30,9 +30,10 @@ class TestThreading(unittest.TestCase):
     def test_threaded_inserter(self):
         u = User()
         try:
-            t = ThreadedInserter(c=self._users,doc_generator=u)
-            t.start(thread_count=2, user_count=20)
+            t = ThreadedInserter(c=self._users, doc_generator=User)
+            t.start(thread_count=2, user_count=10000)
             t.stop()
+            print(f"{t.elapsed}")
         except pymongo.errors.BulkWriteError as e:
             print(f"{e}")
             raise
